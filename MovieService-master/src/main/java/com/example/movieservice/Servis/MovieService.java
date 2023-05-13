@@ -2,6 +2,7 @@ package com.example.movieservice.Servis;
 
 import com.example.movieservice.Model.Movie;
 import com.example.movieservice.Repository.MovieRepository;
+import com.example.movieservice.exceptions.MovieNotFoundExceptions;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,45 +17,31 @@ public class MovieService {
         this.movieRepository = movieRepository;
     }
 
-    public void save(Movie movie) {
-        movieRepository.save(movie);
+    public Movie findById(Long id){
+        return movieRepository.findById(id)
+                .orElseThrow(MovieNotFoundExceptions::new);
     }
 
-    public List<Movie> getAllMovies() {
-        return movieRepository.getAll();
+    public List<Movie> getAll(){
+        return movieRepository.findAll();
     }
 
-    public Movie finById(long id) {
-        Optional<Movie> optionalMovie = movieRepository.findById(id);
-        if (optionalMovie.isPresent()) {
-            return optionalMovie.get();
-        } else {
-            throw new RuntimeException();
-        }
+    public Movie saveMovie(Movie movie){
+        return  movieRepository.save(movie);
     }
+    //public Movie deleteMovie(Long id){
+      //  return movieRepository.deleteById(id);
 
-    public void updateMovie(Movie movieWithUpdatedData){
-        Movie movieInBase = finById(movieWithUpdatedData.getId());
-        if(movieInBase != null){
-            if(movieWithUpdatedData.getName() != null){
-                movieInBase.setName(movieWithUpdatedData.getName());
-            }
-            if(movieWithUpdatedData.getCategory() != null){
-                movieInBase.setCategory(movieWithUpdatedData.getCategory());
-            }else{
-                throw new IllegalArgumentException("Bledne dane");
-            }
-        }else {
-            throw new IllegalArgumentException("Brak filmu o id: " + movieWithUpdatedData.getId());
-        }
-    }
 
-    public void deleteMovie(long id){
-        Movie deletingMovie = finById(id);
-        if (deletingMovie != null){
-            movieRepository.remove(deletingMovie);
-        }else {
-            throw new IllegalArgumentException("Brak filmu o id: "+ id);
-        }
-    }
+    //}
+
+    //public void updateMovie(Movie movieNewData, Long id){
+      //  Movie movie = findById(id);
+       // if (movie != null){
+        //    movie.setCategory(movieNewData.getCategory());
+         //   movie.setName(movieNewData.getName());
+        //}
+    // }
+
+    //}
 }
