@@ -17,55 +17,54 @@ public class MovieController {
         this.movieService = movieService;
     }
 
-
-
-    @GetMapping("/Movies")
-    public ResponseEntity<List<Movie>> showAllMovies(){
-//        return (ResponseEntity<List<Movie>>) this.movieService.getAllMovies();
-        return ResponseEntity.ok(movieService.getAll());
+    @GetMapping("/movies")
+    public ResponseEntity<List<Movie>> getAllFilms(){
+        if(MovieService.getAll() == null){
+            return ResponseEntity.ok(MovieService.getAll());
+        }else{
+            return ResponseEntity.noContent().build();
+        }
     }
-
-
-
     @GetMapping("/movies/{id}")
-    public ResponseEntity<Movie> findById(@PathVariable long id){
-        return ResponseEntity.ok(movieService.findById(id));
+    public ResponseEntity<Movie> getMovieById(@PathVariable Long id) {
+        if (MovieService.findById(id) != null) {
+            return ResponseEntity.ok(MovieService.findById(id));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
-
-    //edp adding new movie
-
     @PostMapping("/movies")
-    public ResponseEntity<Movie> addMovie(@RequestBody Movie movie){
-        if (movie != null){
-            movieService.saveMovie(movie);
+    public ResponseEntity<Movie> addMovie(@RequestBody Movie movie) {
+        if (movie != null) {
+            MovieService.saveMovie(movie);
             return ResponseEntity.ok(movie);
         } else {
             return ResponseEntity.badRequest().build();
         }
     }
+    @PutMapping("/movies/isAvaiable/{id}")
+    public ResponseEntity<Void> updateMovieIsAvailable(@PathVariable Long id){
+        movieService.changeIsA(id);
+        return ResponseEntity.ok().build();
+    }
+    @PutMapping("/movies/{id}")
+    public ResponseEntity<Movie> updateMovie(@PathVariable Long id, @RequestBody Movie movie) {
+        if (getMovieById(id) != null) {
+            movie.setId(id);
+            MovieService.updateMovie(movie);
+            return ResponseEntity.ok(movie);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    @DeleteMapping("/movies/{id}")
+    public ResponseEntity<Void> deleteMovie(@PathVariable Long id) {
+        if(getMovieById(id) != null){
+            MovieService.deleteMovie(id);
+            return ResponseEntity.noContent().build();
+        }else{
+            return ResponseEntity.notFound().build();
+        }
+    }
 
-    //updating movie
-
-   // @PutMapping("/movies/{id}")
-    // public ResponseEntity<Movie> updateMovie(@PathVariable long id, @RequestBody Movie movie){
-      //   if (findById(id) != null) {
-         //    movie.setId(id);
-          //   movieService.updateMovie(id);
-           //  return ResponseEntity.ok(movie);
-       //  } else {
-          //  return ResponseEntity.badRequest().build();
-       // }
-    // }
-
-    // Deleting movie
-
-   // @DeleteMapping("/movies/{id}")
-    //public ResponseEntity<Void> deletingMovie(@PathVariable long id){
-      //  if (findById(id) != null){
-        //    movieService.deleteMovie(id);
-          //  return ResponseEntity.noContent().build();
-       // } else {
-         //   return ResponseEntity.notFound().build();
-       // }
-    //}
 }

@@ -6,7 +6,6 @@ import com.example.movieservice.exceptions.MovieNotFoundExceptions;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MovieService {
@@ -17,9 +16,9 @@ public class MovieService {
         this.movieRepository = movieRepository;
     }
 
+
     public Movie findById(Long id){
-        return movieRepository.findById(id)
-                .orElseThrow(MovieNotFoundExceptions::new);
+        return movieRepository.findById(id).orElseThrow(MovieNotFoundExceptions::new);
     }
 
     public List<Movie> getAll(){
@@ -46,7 +45,7 @@ public class MovieService {
         movieRepository.save(movieInBase);
     }
 
-    public void deleteFilm(Long id){
+    public void deleteMovie(Long id){
         Movie movieToDelete = findById(id);
         if (movieToDelete != null){
             movieRepository.deleteById(id);
