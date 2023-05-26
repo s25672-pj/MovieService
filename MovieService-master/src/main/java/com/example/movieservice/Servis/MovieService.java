@@ -29,19 +29,36 @@ public class MovieService {
     public Movie saveMovie(Movie movie){
         return  movieRepository.save(movie);
     }
-    //public Movie deleteMovie(Long id){
-      //  return movieRepository.deleteById(id);
 
+    public void updateMovie(Movie movieWithUpdate){
+        Movie movieInBase = findById(movieWithUpdate.getId());
+        if(movieInBase != null){
+            if(movieWithUpdate.getName() != null){
+                movieInBase.setName(movieWithUpdate.getName());
+            }
+            if(movieWithUpdate.getCategory() != null){
+                movieInBase.setCategory(movieWithUpdate.getCategory());
+            }
 
-    //}
+        }else {
+            throw new IllegalArgumentException("Nie udało sie zaktualizować, film o id " + movieWithUpdate.getId() + " nie został odnaleziony w bazie");
+        }
+        movieRepository.save(movieInBase);
+    }
 
-    //public void updateMovie(Movie movieNewData, Long id){
-      //  Movie movie = findById(id);
-       // if (movie != null){
-        //    movie.setCategory(movieNewData.getCategory());
-         //   movie.setName(movieNewData.getName());
-        //}
-    // }
+    public void deleteFilm(Long id){
+        Movie movieToDelete = findById(id);
+        if (movieToDelete != null){
+            movieRepository.deleteById(id);
+        }else {
+            throw new IllegalArgumentException("Nie udało się usunąć, film  id = " + id + ", nie został odnaleziony w bazie");
+        }
+    }
 
-    //}
+    public void changeIsA(Long id) {
+        Movie target = findById(id);
+        target.setAvailable(!target.isAvailable());
+        movieRepository.save(target);
+    }
 }
+

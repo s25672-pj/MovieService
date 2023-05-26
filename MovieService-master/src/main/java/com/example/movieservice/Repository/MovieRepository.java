@@ -11,4 +11,12 @@ import java.util.Optional;
 @Repository
 public interface MovieRepository extends JpaRepository<Movie, Long> {
 
+    Optional<Movie> findById(Long aLong);
+
+    <S extends Movie> S save(S entity);
+
+    void deleteById(Long aLong);
+
+    List<Movie> findAll();
+
 }
